@@ -60,7 +60,12 @@ impl SonicCCClient {
         }
     }
     pub fn with_host(&mut self, host: impl Into<String>) -> Self {
-        self.host = Some(format!("http://{}/v1/chat/completions", host.into()));
+        let url = host.into();
+        if url.starts_with("http://") || url.starts_with("https://") {
+            self.host = Some(format!("{url}/v1/chat/completions"));
+        } else {
+            self.host = Some(format!("http://{url}/v1/chat/completions"));
+        }
         self.clone()
     }
     pub fn with_api_key(&mut self, api_key: impl Into<String>) -> Self {
